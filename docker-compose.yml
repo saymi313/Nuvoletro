@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 1. The Database (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: nuvoletro_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nuvoletro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. The Task Queue (Redis - Required for Celery)
+  redis:
+    image: redis:alpine
+    container_name: nuvoletro_redis
+    ports:
+      - "6379:6379"
+
+  # 3. Vector DB (ChromaDB - For RAG Memory)
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: nuvoletro_chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+volumes:
+  postgres_data:
+  chroma_data:
